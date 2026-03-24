@@ -18,3 +18,11 @@ FAVORITE_USERS = [
 # Claude model settings
 CLAUDE_MODEL = "claude-sonnet-4-20250514"
 CLAUDE_MAX_TOKENS = 4096
+
+# Data directory for persistent files (data.db, cookies.json, favorites.json).
+# Defaults to the project root. Set to "/data" in Docker for volume mount.
+_PROJECT_ROOT = os.path.join(os.path.dirname(__file__), "..")
+DATA_DIR = os.getenv("DATA_DIR", _PROJECT_ROOT)
+
+# App password for remote access. If empty, no authentication required.
+APP_PASSWORD = os.getenv("APP_PASSWORD", "")

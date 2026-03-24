@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.git/
+*.db
+cookies.json
+cookies_raw.json
+favorites.json
+.obsidian/
+Project.canvas
+canvas-tool.py

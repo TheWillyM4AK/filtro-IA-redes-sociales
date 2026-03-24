@@ -11,7 +11,9 @@ from datetime import datetime, timedelta, timezone
 import src.twikit_patch  # noqa: F401 — must be imported before twikit
 from twikit import Client
 
-COOKIES_PATH = os.path.join(os.path.dirname(__file__), "..", "cookies.json")
+from src.config import DATA_DIR
+
+COOKIES_PATH = os.path.join(DATA_DIR, "cookies.json")
 
 
 async def create_client() -> Client:

@@ -1,3 +1,12 @@
+---
+title: Filtro IA Twitter
+emoji: 🧠
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # AI Filter for Social Media
 
 **Stop doom scrolling.** Ask an AI "what did @user say today?" and get a summary with links to the original tweets.

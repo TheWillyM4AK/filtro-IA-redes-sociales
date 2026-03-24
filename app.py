@@ -4,13 +4,13 @@ import asyncio
 import json
 import os
 import streamlit as st
-from src.scraper import get_user_tweets
+from src.scraper import get_user_tweets, COOKIES_PATH
 from src.query import summarize_user_tweets
-from src.config import FAVORITE_USERS
+from src.config import FAVORITE_USERS, DATA_DIR, APP_PASSWORD
 from src.storage import save_summary, get_history
 from src.i18n import get_strings
 
-FAVORITES_PATH = os.path.join(os.path.dirname(__file__), "favorites.json")
+FAVORITES_PATH = os.path.join(DATA_DIR, "favorites.json")
 
 
 def load_favorites() -> list[str]:
@@ -27,6 +27,58 @@ def save_favorites(favorites: list[str]):
         json.dump(favorites, f, ensure_ascii=False, indent=2)
 
 
+def process_cookie_upload(uploaded_file) -> tuple[bool, str, int]:
+    """Convert uploaded Cookie-Editor JSON to twikit format.
+
+    Returns (success, message, cookie_count).
+    """
+    try:
+        browser_cookies = json.loads(uploaded_file.read().decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        return False, str(e), 0
+
+    twikit_cookies = {}
+    for c in browser_cookies:
+        domain = c.get("domain", "")
+        if "x.com" in domain or "twitter.com" in domain:
+            twikit_cookies[c["name"]] = c["value"]
+
+    essential = ["auth_token", "ct0"]
+    missing = [k for k in essential if k not in twikit_cookies]
+    if missing:
+        return False, ", ".join(missing), 0
+
+    with open(COOKIES_PATH, "w", encoding="utf-8") as f:
+        json.dump(twikit_cookies, f, indent=2)
+
+    return True, "", len(twikit_cookies)
+
+
+st.set_page_config(page_title="AI Filter - Twitter/X", page_icon="🧠", layout="wide")
+
+# --- Mobile-friendly CSS ---
+st.markdown("""
+<style>
+@media (max-width: 768px) {
+    .stButton > button {
+        min-height: 48px;
+        font-size: 1rem;
+    }
+    .stTextInput > div > div > input {
+        font-size: 1rem;
+        min-height: 44px;
+    }
+    .stSelectbox > div > div {
+        min-height: 44px;
+    }
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 # --- Language selector (must come before any other UI) ---
 if "lang" not in st.session_state:
     st.session_state["lang"] = "en"
@@ -41,7 +93,18 @@ lang_label = st.sidebar.selectbox(
 st.session_state["lang"] = lang_options[lang_label]
 t = get_strings(st.session_state["lang"])
 
-st.set_page_config(page_title=t["page_title"], page_icon="🧠", layout="wide")
+# --- Authentication gate ---
+if APP_PASSWORD:
+    if not st.session_state.get("authenticated"):
+        st.title(f"🧠 {t['login_title']}")
+        password = st.text_input(t["login_password"], type="password")
+        if st.button(t["login_button"], type="primary", use_container_width=True):
+            if password == APP_PASSWORD:
+                st.session_state["authenticated"] = True
+                st.rerun()
+            else:
+                st.error(t["login_error"])
+        st.stop()
 
 st.title(f"🧠 {t['title']}")
 st.caption(t["caption"])
@@ -94,6 +157,30 @@ if st.sidebar.button(t["digest_button"], use_container_width=True, type="primary
     st.session_state["run_digest"] = True
     st.session_state["digest_hours_val"] = digest_hours
     st.rerun()
+
+# --- Sidebar: Cookie upload ---
+st.sidebar.divider()
+with st.sidebar.expander(t["cookies_header"]):
+    cookies_exist = os.path.isfile(COOKIES_PATH)
+    status_text = t["cookies_ok"] if cookies_exist else t["cookies_not_found"]
+    st.caption(t["cookies_status"].format(status=status_text))
+    st.caption(t["cookies_info"])
+    uploaded = st.file_uploader(t["cookies_upload"], type=["json"], key="cookie_upload")
+    if uploaded is not None:
+        ok, msg, count = process_cookie_upload(uploaded)
+        if ok:
+            st.success(t["cookies_success"].format(count=count))
+        elif msg and "," in msg:
+            st.warning(t["cookies_missing"].format(missing=msg))
+        else:
+            st.error(t["cookies_error"].format(error=msg))
+
+# --- Sidebar: Logout ---
+if APP_PASSWORD:
+    st.sidebar.divider()
+    if st.sidebar.button(t["logout_button"], use_container_width=True):
+        st.session_state["authenticated"] = False
+        st.rerun()
 
 # --- Main area ---
 col1, col2 = st.columns([3, 1])

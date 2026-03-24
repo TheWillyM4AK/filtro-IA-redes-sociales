@@ -5,7 +5,9 @@ import json
 import os
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data.db")
+from src.config import DATA_DIR
+
+DB_PATH = os.path.join(DATA_DIR, "data.db")
 
 
 def _get_db() -> sqlite3.Connection:
