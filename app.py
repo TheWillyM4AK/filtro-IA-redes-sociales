@@ -8,6 +8,7 @@ from src.scraper import get_user_tweets
 from src.query import summarize_user_tweets
 from src.config import FAVORITE_USERS
 from src.storage import save_summary, get_history
+from src.i18n import get_strings
 
 FAVORITES_PATH = os.path.join(os.path.dirname(__file__), "favorites.json")
 
@@ -26,23 +27,37 @@ def save_favorites(favorites: list[str]):
         json.dump(favorites, f, ensure_ascii=False, indent=2)
 
 
-st.set_page_config(page_title="Filtro IA - Twitter/X", page_icon="🧠", layout="wide")
+# --- Language selector (must come before any other UI) ---
+if "lang" not in st.session_state:
+    st.session_state["lang"] = "en"
 
-st.title("🧠 Filtro IA para Twitter/X")
-st.caption("Consume Twitter sin doom scrolling. Resúmenes con IA, no algoritmos.")
+lang_options = {"English": "en", "Español": "es"}
+lang_label = st.sidebar.selectbox(
+    "🌐",
+    list(lang_options.keys()),
+    index=list(lang_options.values()).index(st.session_state["lang"]),
+    key="lang_select",
+)
+st.session_state["lang"] = lang_options[lang_label]
+t = get_strings(st.session_state["lang"])
+
+st.set_page_config(page_title=t["page_title"], page_icon="🧠", layout="wide")
+
+st.title(f"🧠 {t['title']}")
+st.caption(t["caption"])
 
 # --- Initialize session state ---
 if "favorites" not in st.session_state:
     st.session_state["favorites"] = load_favorites()
 
 # --- Sidebar: favorite users ---
-st.sidebar.header("Usuarios favoritos")
+st.sidebar.header(t["favorites_header"])
 
 fav_hours = st.sidebar.selectbox(
-    "Periodo",
+    t["period"],
     [6, 12, 24, 48, 72],
     index=2,
-    format_func=lambda h: f"Últimas {h}h",
+    format_func=lambda h: t["last_hours"].format(h=h),
     key="fav_hours",
 )
 
@@ -54,17 +69,17 @@ for user in st.session_state["favorites"]:
         st.rerun()
 
 # Remove a favorite (separate section to avoid clutter)
-with st.sidebar.expander("Quitar usuario"):
+with st.sidebar.expander(t["remove_user"]):
     for user in st.session_state["favorites"]:
-        if st.button(f"Quitar @{user}", key=f"del_{user}", use_container_width=True):
+        if st.button(t["remove_prefix"].format(user=user), key=f"del_{user}", use_container_width=True):
             st.session_state["favorites"].remove(user)
             save_favorites(st.session_state["favorites"])
             st.rerun()
 
 # Add new favorite
 st.sidebar.divider()
-new_fav = st.sidebar.text_input("Añadir usuario", placeholder="ej: elonmusk")
-if st.sidebar.button("Añadir", use_container_width=True) and new_fav:
+new_fav = st.sidebar.text_input(t["add_user"], placeholder=t["add_user_placeholder"])
+if st.sidebar.button(t["add_button"], use_container_width=True) and new_fav:
     new_fav = new_fav.strip().lstrip("@")
     if new_fav and new_fav not in st.session_state["favorites"]:
         st.session_state["favorites"].append(new_fav)
@@ -73,9 +88,9 @@ if st.sidebar.button("Añadir", use_container_width=True) and new_fav:
 
 # Digest button
 st.sidebar.divider()
-st.sidebar.subheader("Digest")
-digest_hours = st.sidebar.selectbox("Periodo del digest", [6, 12, 24, 48], index=2, format_func=lambda h: f"Últimas {h}h", key="digest_hours")
-if st.sidebar.button("Generar digest de todos", use_container_width=True, type="primary"):
+st.sidebar.subheader(t["digest"])
+digest_hours = st.sidebar.selectbox(t["digest_period"], [6, 12, 24, 48], index=2, format_func=lambda h: t["last_hours"].format(h=h), key="digest_hours")
+if st.sidebar.button(t["digest_button"], use_container_width=True, type="primary"):
     st.session_state["run_digest"] = True
     st.session_state["digest_hours_val"] = digest_hours
     st.rerun()
@@ -84,9 +99,9 @@ if st.sidebar.button("Generar digest de todos", use_container_width=True, type="
 col1, col2 = st.columns([3, 1])
 with col1:
     username = st.text_input(
-        "Usuario de Twitter/X (sin @)",
+        t["username_input"],
         value=st.session_state.get("username", ""),
-        placeholder="ej: elonmusk",
+        placeholder=t["username_placeholder"],
     )
 with col2:
     # Use sidebar period if coming from a favorite button click
@@ -95,11 +110,12 @@ with col2:
         override = st.session_state.pop("hours_override")
         options = [6, 12, 24, 48, 72]
         default_idx = options.index(override) if override in options else 2
-    hours = st.selectbox("Periodo", [6, 12, 24, 48, 72], index=default_idx, format_func=lambda h: f"Últimas {h}h")
+    hours = st.selectbox(t["period"], [6, 12, 24, 48, 72], index=default_idx, format_func=lambda h: t["last_hours"].format(h=h))
 
-use_thinking = st.checkbox("Activar pensamiento extendido (más lento, más caro, más profundo)")
+use_thinking = st.checkbox(t["thinking_checkbox"])
 
-run = st.button("Resumir", type="primary", use_container_width=True) or st.session_state.get("run_query", False)
+lang = st.session_state["lang"]
+run = st.button(t["summarize_button"], type="primary", use_container_width=True) or st.session_state.get("run_query", False)
 
 # Clear the run_query flag
 if "run_query" in st.session_state:
@@ -108,46 +124,46 @@ if "run_query" in st.session_state:
 if run and username:
     username = username.strip().lstrip("@")
 
-    with st.status(f"Obteniendo tweets de @{username}...", expanded=True) as status:
-        st.write(f"Buscando tweets de las últimas {hours} horas...")
+    with st.status(t["fetching_tweets"].format(user=username), expanded=True) as status:
+        st.write(t["searching_tweets"].format(hours=hours))
         tweets = asyncio.run(get_user_tweets(username, hours=hours))
-        st.write(f"Encontrados **{len(tweets)}** tweets.")
+        st.write(t["found_tweets"].format(count=len(tweets)))
 
         if not tweets:
-            status.update(label=f"No hay tweets recientes de @{username}", state="complete")
-            st.info(f"@{username} no ha publicado nada en las últimas {hours} horas.")
+            status.update(label=t["no_recent_tweets"].format(user=username), state="complete")
+            st.info(t["no_tweets_info"].format(user=username, hours=hours))
         else:
-            st.write("Generando resumen con Claude Sonnet...")
-            summary = summarize_user_tweets(username, tweets, use_thinking=use_thinking)
+            st.write(t["generating_summary"])
+            summary = summarize_user_tweets(username, tweets, use_thinking=use_thinking, lang=lang)
             save_summary(username, summary, tweets, hours)
-            status.update(label=f"Resumen de @{username} ({len(tweets)} tweets)", state="complete")
+            status.update(label=t["summary_label"].format(user=username, count=len(tweets)), state="complete")
 
     if tweets:
         st.markdown(summary)
 
         # Expandable: raw tweets
-        with st.expander(f"Ver los {len(tweets)} tweets originales"):
+        with st.expander(t["view_original"].format(count=len(tweets))):
             sort_order = st.radio(
-                "Ordenar por",
-                ["Más recientes", "Más relevantes"],
+                t["sort_by"],
+                [t["most_recent"], t["most_relevant"]],
                 horizontal=True,
             )
-            if sort_order == "Más recientes":
-                sorted_tweets = sorted(tweets, key=lambda t: t["created_at"], reverse=True)
+            if sort_order == t["most_recent"]:
+                sorted_tweets = sorted(tweets, key=lambda tw: tw["created_at"], reverse=True)
             else:
-                sorted_tweets = sorted(tweets, key=lambda t: t["likes"] + t["retweets"], reverse=True)
+                sorted_tweets = sorted(tweets, key=lambda tw: tw["likes"] + tw["retweets"], reverse=True)
 
-            for t in sorted_tweets:
-                relevance = t['likes'] + t['retweets']
+            for tw in sorted_tweets:
+                relevance = tw['likes'] + tw['retweets']
                 st.markdown(
-                    f"**@{t['username']}** · {t['created_at'][:16]} · "
-                    f"❤️ {t['likes']} · 🔁 {t['retweets']} · "
-                    f"📊 {relevance} relevancia\n\n"
-                    f"{t['text']}\n\n"
-                    f"[Ver en Twitter/X]({t['url']})\n\n---"
+                    f"**@{tw['username']}** · {tw['created_at'][:16]} · "
+                    f"❤️ {tw['likes']} · 🔁 {tw['retweets']} · "
+                    f"📊 {relevance} {t['relevance']}\n\n"
+                    f"{tw['text']}\n\n"
+                    f"[{t['view_on_twitter']}]({tw['url']})\n\n---"
                 )
 elif run:
-    st.warning("Escribe un nombre de usuario.")
+    st.warning(t["enter_username"])
 
 # --- Digest: all favorites at once ---
 if st.session_state.get("run_digest"):
@@ -156,46 +172,46 @@ if st.session_state.get("run_digest"):
     favorites = st.session_state.get("favorites", [])
 
     if not favorites:
-        st.warning("No tienes usuarios favoritos. Añade algunos en el sidebar.")
+        st.warning(t["no_favorites"])
     else:
-        st.header(f"Digest de {len(favorites)} usuarios (últimas {digest_h}h)")
-        progress = st.progress(0, text="Iniciando digest...")
+        st.header(t["digest_header"].format(count=len(favorites), hours=digest_h))
+        progress = st.progress(0, text=t["starting_digest"])
 
         for i, user in enumerate(favorites):
-            progress.progress((i) / len(favorites), text=f"Obteniendo tweets de @{user}...")
+            progress.progress((i) / len(favorites), text=t["digest_fetching"].format(user=user))
             tweets = asyncio.run(get_user_tweets(user, hours=digest_h))
 
             if not tweets:
-                st.info(f"@{user} — sin tweets recientes.")
+                st.info(t["digest_no_tweets"].format(user=user))
                 continue
 
-            progress.progress((i + 0.5) / len(favorites), text=f"Resumiendo @{user} ({len(tweets)} tweets)...")
-            summary = summarize_user_tweets(user, tweets)
+            progress.progress((i + 0.5) / len(favorites), text=t["digest_summarizing"].format(user=user, count=len(tweets)))
+            summary = summarize_user_tweets(user, tweets, lang=lang)
             save_summary(user, summary, tweets, digest_h)
 
-            with st.expander(f"@{user} — {len(tweets)} tweets", expanded=True):
+            with st.expander(t["digest_user_label"].format(user=user, count=len(tweets)), expanded=True):
                 st.markdown(summary)
 
-        progress.progress(1.0, text="Digest completado.")
+        progress.progress(1.0, text=t["digest_done"])
 
 # --- History section ---
 st.divider()
-st.header("Historial de resúmenes")
+st.header(t["history_header"])
 
-search = st.text_input("Buscar en el historial", placeholder="usuario o palabra clave...")
+search = st.text_input(t["history_search"], placeholder=t["history_search_placeholder"])
 history = get_history(search=search)
 
 if not history:
-    st.caption("No hay resúmenes guardados todavía." if not search else "Sin resultados para esa búsqueda.")
+    st.caption(t["history_empty"] if not search else t["history_no_results"])
 else:
     for entry in history:
         timestamp = entry["created_at"][:16].replace("T", " ")
         with st.expander(f"@{entry['username']} · {timestamp} · {entry['tweet_count']} tweets · {entry['hours']}h"):
             st.markdown(entry["summary"])
             tweets_data = json.loads(entry["tweets_json"])
-            st.caption(f"{len(tweets_data)} tweets originales")
-            for t in tweets_data[:5]:
+            st.caption(t["original_tweets"].format(count=len(tweets_data)))
+            for tw in tweets_data[:5]:
                 st.markdown(
-                    f"> **@{t['username']}** · {t.get('created_at', '')[:16]} · "
-                    f"[Ver tweet]({t['url']})\n> {t['text'][:200]}{'...' if len(t['text']) > 200 else ''}"
+                    f"> **@{tw['username']}** · {tw.get('created_at', '')[:16]} · "
+                    f"[{t['view_tweet']}]({tw['url']})\n> {tw['text'][:200]}{'...' if len(tw['text']) > 200 else ''}"
                 )

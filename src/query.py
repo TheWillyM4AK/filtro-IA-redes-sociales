@@ -88,21 +88,25 @@ def chunk_tweets(tweets: list[dict], max_words: int = 2000) -> list[list[dict]]:
     return chunks
 
 
-def summarize_user_tweets(username: str, tweets: list[dict], use_thinking: bool = False) -> str:
+def summarize_user_tweets(username: str, tweets: list[dict], use_thinking: bool = False, lang: str = "es") -> str:
     """Generate a summary of a user's recent tweets.
 
     Args:
         username: The Twitter handle (without @).
         tweets: List of tweet dicts from that user.
         use_thinking: Enable extended thinking for complex analysis.
+        lang: Language code ("es" or "en") for the prompt template.
 
     Returns:
         A summary string with tweet citations.
     """
     if not tweets:
+        if lang == "en":
+            return f"No recent tweets found from @{username}."
         return f"No se encontraron tweets recientes de @{username}."
 
-    prompt_template = _read_prompt("summarize")
+    prompt_name = "summarize" if lang == "es" else "summarize_en"
+    prompt_template = _read_prompt(prompt_name)
     formatted_tweets = format_tweets_for_prompt(tweets)
     prompt = prompt_template.replace("{username}", username).replace("{tweets}", formatted_tweets)
 
