@@ -1,319 +1,42 @@
 {
-	"nodes": [
-		{
-			"id": "group-setup",
-			"type": "group",
-			"x": 20,
-			"y": 40,
-			"width": 1030,
-			"height": 590,
-			"label": "Setup"
-		},
-		{
-			"id": "group-dashbo",
-			"type": "group",
-			"x": 1130,
-			"y": 2350,
-			"width": 1030,
-			"height": 590,
-			"label": "Dashboard"
-		},
-		{
-			"id": "group-acceso",
-			"type": "group",
-			"x": 20,
-			"y": 700,
-			"width": 540,
-			"height": 920,
-			"label": "Acceso a Datos"
-		},
-		{
-			"id": "group-motori",
-			"type": "group",
-			"x": 20,
-			"y": 1690,
-			"width": 540,
-			"height": 920,
-			"label": "Motor IA"
-		},
-		{
-			"id": "group-persis",
-			"type": "group",
-			"x": 1130,
-			"y": 3010,
-			"width": 540,
-			"height": 590,
-			"label": "Persistencia"
-		},
-		{
-			"id": "canvas-errors",
-			"type": "text",
-			"text": "## Errors\n✓ None",
-			"x": -540,
-			"y": -750,
-			"width": 380,
-			"height": 200,
-			"color": "1"
-		},
-		{
-			"id": "legend",
-			"type": "text",
-			"text": "## Legend\n🔴 **Red** = To Do (ready)\n⬜ **Gray** = Blocked\n🟠 **Orange** = Doing\n🔵 **Cyan** = Ready to review\n🟢 **Green** = Done\n🟣 **Purple** = Proposed by agent",
-			"x": -540,
-			"y": -310,
-			"width": 380,
-			"height": 230,
-			"color": "0"
-		},
-		{
-			"id": "canvas-warnings",
-			"type": "text",
-			"text": "## Warnings\n✓ None",
-			"x": -540,
-			"y": -530,
-			"width": 380,
-			"height": 200,
-			"color": "3"
-		},
-		{
-			"id": "c0eec521",
-			"type": "text",
-			"text": "## SE-01 Clonar fork joelchan/ai-sanity y analizar código\nClonar el fork de joelchan/ai-sanity (ya tiene Claude API + cookie auth). Analizar la estructura del código: scraper.py, query.py, emailer.py, storage.py. Documentar qué sirve y qué hay que reemplazar.",
-			"x": 80,
-			"y": 80,
-			"width": 420,
-			"height": 180,
-			"color": "2"
-		},
-		{
-			"id": "42fbe799",
-			"type": "text",
-			"text": "## SE-02 Configurar entorno Python\nCrear virtualenv, instalar dependencias base (twikit, anthropic SDK, streamlit). Crear estructura de proyecto limpia partiendo del fork.",
-			"x": 80,
-			"y": 410,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "dc1d18ad",
-			"type": "text",
-			"text": "## SE-03 Obtener API key de Anthropic\nCrear cuenta en console.anthropic.com. Añadir crédito ($5 iniciales). Generar API key y configurar en .env. IMPORTANTE: la suscripción a claude.ai NO incluye acceso API, es un producto separado.",
-			"x": 570,
-			"y": 80,
-			"width": 420,
-			"height": 180,
-			"color": "1"
-		},
-		{
-			"id": "48b10553",
-			"type": "text",
-			"text": "## AAD-01 Configurar twikit con cookies del navegador\nInstalar twikit. Exportar cookies de sesión de Twitter/X desde el navegador (auth_token + ct0). Configurar autenticación. Verificar que se puede conectar a Twitter.",
-			"x": 80,
-			"y": 740,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "cf7c9e65",
-			"type": "text",
-			"text": "## AAD-02 Función para obtener tweets de un usuario\nUsar twikit para descargar los tweets recientes de un usuario específico dado su @handle. Parámetros: nombre de usuario, ventana temporal (últimas N horas/día). Manejar paginación si es necesario.",
-			"x": 80,
-			"y": 1070,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "1b3bfc39",
-			"type": "text",
-			"text": "## AAD-03 Parsear y estructurar datos de tweets\nTransformar la respuesta de twikit en un formato limpio: texto del tweet, fecha, likes, retweets, URL directa al tweet, si es respuesta/retweet/quote. Este formato será la entrada para Claude.",
-			"x": 80,
-			"y": 1400,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "0da399bc",
-			"type": "text",
-			"text": "## MI-01 Integrar Claude Sonnet API\nConfigurar cliente Anthropic con la API key. Crear función base que envía tweets formateados a Claude Sonnet y recibe resumen. Manejar errores y rate limits.",
-			"x": 80,
-			"y": 1730,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "61377483",
-			"type": "text",
-			"text": "## MI-02 Diseñar prompts de resumen con citas\nCrear system prompt y user prompt que: 1) Resume los tweets del usuario en lenguaje natural, 2) Agrupa por temas si hay varios, 3) Cita cada tweet con enlace directo [enlace]. Inspirarse en los prompts few-shot del fork de ai-sanity.",
-			"x": 80,
-			"y": 2060,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "b049fa28",
-			"type": "text",
-			"text": "## MI-03 Modo extended thinking opcional\nAñadir flag configurable para activar extended thinking en consultas complejas (ej: análisis de opinión, comparar lo que dicen varios usuarios sobre un tema). Desactivado por defecto para ahorrar costes.",
-			"x": 80,
-			"y": 2390,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "eaaef77d",
-			"type": "text",
-			"text": "## DA-01 App Streamlit bÃ¡sica con input de consulta\nCrear interfaz Streamlit mínima: campo para escribir @usuario, botÃ³n 'Resumir', y Ã¡rea donde se muestra el resumen generado por Claude con los enlaces a tweets.",
-			"x": 1190,
-			"y": 2390,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "cd3f3ee0",
-			"type": "text",
-			"text": "## DA-02 Panel de usuarios favoritos\nLista configurable de usuarios favoritos en el sidebar de Streamlit. Click en un usuario = resumen instantáneo. Poder añadir/quitar usuarios de la lista.",
-			"x": 1190,
-			"y": 2720,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "69ee0194",
-			"type": "text",
-			"text": "## DA-03 Historial de resúmenes\nMostrar resúmenes anteriores ordenados por fecha. Poder buscar en el historial. Requiere que la persistencia SQLite esté implementada.",
-			"x": 1680,
-			"y": 2720,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "ce012be9",
-			"type": "text",
-			"text": "## PE-01 SQLite para tweets y resúmenes\nCrear base de datos SQLite local con tablas: tweets (usuario, texto, fecha, url, metadata), resúmenes (usuario, fecha_consulta, resumen, tweets_referenciados). Funciones CRUD básicas.",
-			"x": 1190,
-			"y": 3050,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		},
-		{
-			"id": "a9359aba",
-			"type": "text",
-			"text": "## PE-02 Digest diario automático\nScript que se ejecuta automáticamente (cron/scheduler) una vez al día: descarga tweets de todos los usuarios favoritos, genera resumen de cada uno, lo guarda en SQLite. Al abrir el dashboard ya tienes el digest listo.",
-			"x": 1190,
-			"y": 3380,
-			"width": 420,
-			"height": 180,
-			"color": "6"
-		}
+	"nodes":[
+		{"id":"group-setup","type":"group","x":20,"y":40,"width":1030,"height":590,"label":"Setup"},
+		{"id":"group-dashbo","type":"group","x":1130,"y":2350,"width":1030,"height":590,"label":"Dashboard"},
+		{"id":"group-acceso","type":"group","x":20,"y":700,"width":540,"height":920,"label":"Acceso a Datos"},
+		{"id":"group-motori","type":"group","x":20,"y":1690,"width":540,"height":920,"label":"Motor IA"},
+		{"id":"group-persis","type":"group","x":1130,"y":3010,"width":540,"height":590,"label":"Persistencia"},
+		{"id":"canvas-errors","type":"text","text":"## Errors\n✓ None","x":-540,"y":-750,"width":380,"height":200,"color":"1"},
+		{"id":"legend","type":"text","text":"## Legend\n🔴 **Red** = To Do (ready)\n⬜ **Gray** = Blocked\n🟠 **Orange** = Doing\n🔵 **Cyan** = Ready to review\n🟢 **Green** = Done\n🟣 **Purple** = Proposed by agent","x":-540,"y":-310,"width":380,"height":230,"color":"0"},
+		{"id":"canvas-warnings","type":"text","text":"## Warnings\n✓ None","x":-540,"y":-530,"width":380,"height":200,"color":"3"},
+		{"id":"c0eec521","type":"text","text":"## SE-01 Clonar fork joelchan/ai-sanity y analizar código\nAnálisis completado del fork joelchan/ai-sanity. Repo clonado en AppData/Local/Temp/ai-sanity-analysis.\n\nCOMPONENTES A REUTILIZAR:\n- query.py (Claude API wrapper + chunking) → ADAPTAR (tiene bug de prompt duplicado)\n- prompts/summarize (few-shot con ejemplo) → ADAPTAR (parametrizar usuarios)\n- emailer.py → MANTENER (simple, funcional)\n- util.py → MANTENER\n\nCOMPONENTES A REEMPLAZAR:\n- scraper.py (Playwright frágil, paths hardcoded) → Sustituir por twikit\n- storage.py (solo en memoria) → Sustituir por SQLite\n- prompts/filter (demasiado vago) → Reescribir\n- requirements.txt (lleno de deps no usadas) → Limpiar\n- Dockerfile (imagen base obsoleta) → Actualizar\n\nBUGS ENCONTRADOS: prompt de filtro duplicado en query.py, playwright_stealth no está en requirements.txt, dependencias fantasma (boto3, SQLAlchemy, alembic).","x":80,"y":80,"width":420,"height":180,"color":"4"},
+		{"id":"42fbe799","type":"text","text":"## SE-02 Configurar entorno Python\nEntorno configurado:\n- Python 3.14 + virtualenv en venv/\n- Dependencias: twikit 2.3.3, anthropic 0.86.0, streamlit 1.55.0, python-dotenv\n- Estructura creada: src/ (config.py, query.py, scraper.py, main.py), prompts/summarize\n- .env.example con variables necesarias\n- .gitignore configurado\n- requirements.txt limpio (4 deps vs 39 del fork original)\n- Todos los imports verificados OK","x":80,"y":410,"width":420,"height":180,"color":"4"},
+		{"id":"dc1d18ad","type":"text","text":"## SE-03 Obtener API key de Anthropic\nCrear cuenta en console.anthropic.com. Añadir crédito ($5 iniciales). Generar API key y configurar en .env. IMPORTANTE: la suscripción a claude.ai NO incluye acceso API, es un producto separado.","x":570,"y":80,"width":420,"height":180,"color":"4"},
+		{"id":"48b10553","type":"text","text":"## AAD-01 Configurar twikit con cookies del navegador\nInstalar twikit. Exportar cookies de sesión de Twitter/X desde el navegador (auth_token + ct0). Configurar autenticación. Verificar que se puede conectar a Twitter.","x":80,"y":740,"width":420,"height":180,"color":"1"},
+		{"id":"cf7c9e65","type":"text","text":"## AAD-02 Función para obtener tweets de un usuario\nUsar twikit para descargar los tweets recientes de un usuario específico dado su @handle. Parámetros: nombre de usuario, ventana temporal (últimas N horas/día). Manejar paginación si es necesario.","x":80,"y":1070,"width":420,"height":180,"color":"0"},
+		{"id":"1b3bfc39","type":"text","text":"## AAD-03 Parsear y estructurar datos de tweets\nTransformar la respuesta de twikit en un formato limpio: texto del tweet, fecha, likes, retweets, URL directa al tweet, si es respuesta/retweet/quote. Este formato será la entrada para Claude.","x":80,"y":1400,"width":420,"height":180,"color":"0"},
+		{"id":"0da399bc","type":"text","text":"## MI-01 Integrar Claude Sonnet API\nConfigurar cliente Anthropic con la API key. Crear función base que envía tweets formateados a Claude Sonnet y recibe resumen. Manejar errores y rate limits.","x":80,"y":1730,"width":420,"height":180,"color":"0"},
+		{"id":"61377483","type":"text","text":"## MI-02 Diseñar prompts de resumen con citas\nCrear system prompt y user prompt que: 1) Resume los tweets del usuario en lenguaje natural, 2) Agrupa por temas si hay varios, 3) Cita cada tweet con enlace directo [enlace]. Inspirarse en los prompts few-shot del fork de ai-sanity.","x":80,"y":2060,"width":420,"height":180,"color":"0"},
+		{"id":"b049fa28","type":"text","text":"## MI-03 Modo extended thinking opcional\nAñadir flag configurable para activar extended thinking en consultas complejas (ej: análisis de opinión, comparar lo que dicen varios usuarios sobre un tema). Desactivado por defecto para ahorrar costes.","x":80,"y":2390,"width":420,"height":180,"color":"0"},
+		{"id":"eaaef77d","type":"text","text":"## DA-01 App Streamlit bÃ¡sica con input de consulta\nCrear interfaz Streamlit mínima: campo para escribir @usuario, botÃ³n 'Resumir', y Ã¡rea donde se muestra el resumen generado por Claude con los enlaces a tweets.","x":1190,"y":2390,"width":420,"height":180,"color":"0"},
+		{"id":"cd3f3ee0","type":"text","text":"## DA-02 Panel de usuarios favoritos\nLista configurable de usuarios favoritos en el sidebar de Streamlit. Click en un usuario = resumen instantáneo. Poder añadir/quitar usuarios de la lista.","x":1190,"y":2720,"width":420,"height":180,"color":"0"},
+		{"id":"69ee0194","type":"text","text":"## DA-03 Historial de resúmenes\nMostrar resúmenes anteriores ordenados por fecha. Poder buscar en el historial. Requiere que la persistencia SQLite esté implementada.","x":1680,"y":2720,"width":420,"height":180,"color":"0"},
+		{"id":"ce012be9","type":"text","text":"## PE-01 SQLite para tweets y resúmenes\nCrear base de datos SQLite local con tablas: tweets (usuario, texto, fecha, url, metadata), resúmenes (usuario, fecha_consulta, resumen, tweets_referenciados). Funciones CRUD básicas.","x":1190,"y":3050,"width":420,"height":180,"color":"0"},
+		{"id":"a9359aba","type":"text","text":"## PE-02 Digest diario automático\nScript que se ejecuta automáticamente (cron/scheduler) una vez al día: descarga tweets de todos los usuarios favoritos, genera resumen de cada uno, lo guarda en SQLite. Al abrir el dashboard ya tienes el digest listo.","x":1190,"y":3380,"width":420,"height":180,"color":"0"}
 	],
-	"edges": [
-		{
-			"id": "edge-001",
-			"fromNode": "c0eec521",
-			"fromSide": "bottom",
-			"toNode": "42fbe799",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-002",
-			"fromNode": "42fbe799",
-			"fromSide": "bottom",
-			"toNode": "48b10553",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-003",
-			"fromNode": "48b10553",
-			"fromSide": "bottom",
-			"toNode": "cf7c9e65",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-004",
-			"fromNode": "cf7c9e65",
-			"fromSide": "bottom",
-			"toNode": "1b3bfc39",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-005",
-			"fromNode": "dc1d18ad",
-			"fromSide": "bottom",
-			"toNode": "0da399bc",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-006",
-			"fromNode": "1b3bfc39",
-			"fromSide": "bottom",
-			"toNode": "0da399bc",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-007",
-			"fromNode": "0da399bc",
-			"fromSide": "bottom",
-			"toNode": "61377483",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-008",
-			"fromNode": "61377483",
-			"fromSide": "bottom",
-			"toNode": "b049fa28",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-009",
-			"fromNode": "61377483",
-			"fromSide": "bottom",
-			"toNode": "eaaef77d",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-010",
-			"fromNode": "eaaef77d",
-			"fromSide": "bottom",
-			"toNode": "cd3f3ee0",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-011",
-			"fromNode": "eaaef77d",
-			"fromSide": "bottom",
-			"toNode": "69ee0194",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-013",
-			"fromNode": "cd3f3ee0",
-			"fromSide": "bottom",
-			"toNode": "a9359aba",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-014",
-			"fromNode": "ce012be9",
-			"fromSide": "bottom",
-			"toNode": "a9359aba",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-015",
-			"fromNode": "69ee0194",
-			"fromSide": "bottom",
-			"toNode": "ce012be9",
-			"toSide": "top"
-		}
+	"edges":[
+		{"id":"edge-001","fromNode":"c0eec521","fromSide":"bottom","toNode":"42fbe799","toSide":"top"},
+		{"id":"edge-004","fromNode":"cf7c9e65","fromSide":"bottom","toNode":"1b3bfc39","toSide":"top"},
+		{"id":"edge-005","fromNode":"dc1d18ad","fromSide":"bottom","toNode":"0da399bc","toSide":"top"},
+		{"id":"edge-006","fromNode":"1b3bfc39","fromSide":"bottom","toNode":"0da399bc","toSide":"top"},
+		{"id":"edge-007","fromNode":"0da399bc","fromSide":"bottom","toNode":"61377483","toSide":"top"},
+		{"id":"edge-008","fromNode":"61377483","fromSide":"bottom","toNode":"b049fa28","toSide":"top"},
+		{"id":"edge-009","fromNode":"61377483","fromSide":"bottom","toNode":"eaaef77d","toSide":"top"},
+		{"id":"edge-010","fromNode":"eaaef77d","fromSide":"bottom","toNode":"cd3f3ee0","toSide":"top"},
+		{"id":"edge-011","fromNode":"eaaef77d","fromSide":"bottom","toNode":"69ee0194","toSide":"top"},
+		{"id":"edge-013","fromNode":"cd3f3ee0","fromSide":"bottom","toNode":"a9359aba","toSide":"top"},
+		{"id":"edge-014","fromNode":"ce012be9","fromSide":"bottom","toNode":"a9359aba","toSide":"top"},
+		{"id":"edge-015","fromNode":"69ee0194","fromSide":"bottom","toNode":"ce012be9","toSide":"top"},
+		{"id":"edge-002","fromNode":"42fbe799","fromSide":"bottom","toNode":"48b10553","toSide":"top"},
+		{"id":"edge-003","fromNode":"48b10553","fromSide":"bottom","toNode":"cf7c9e65","toSide":"top"}
 	]
 }
