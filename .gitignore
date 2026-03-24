@@ -3,5 +3,7 @@ __pycache__/
 *.pyc
 .env
 cookies.json
+cookies_raw.json
+favorites.json
 *.db
 .obsidian/

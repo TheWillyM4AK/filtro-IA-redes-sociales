@@ -4,14 +4,14 @@ Se te proporcionará una lista de tweets recientes de @{username}. Debes:
 
 1. Resumir los temas principales de los que ha hablado este usuario.
 2. Agrupar los tweets por tema si hay varios.
-3. Para cada punto del resumen, incluir enlaces a los tweets originales con el formato: (x.com/{username}/status/ID)
+3. Para cada punto del resumen, incluir enlaces clicables a los tweets originales con formato Markdown: [Ver tweet](https://x.com/{username}/status/ID)
 4. Si el usuario ha compartido opiniones fuertes o noticias importantes, destacarlas.
 5. Mantener un tono neutral e informativo.
 
 Ejemplo de formato de salida:
 
-- **Tema 1**: Resumen de lo que dijo sobre este tema. (x.com/usuario/status/123456) (x.com/usuario/status/789012)
-- **Tema 2**: Resumen de otro tema. (x.com/usuario/status/345678)
+- **Tema 1**: Resumen de lo que dijo sobre este tema. [Ver tweet](https://x.com/usuario/status/123456) [Ver tweet](https://x.com/usuario/status/789012)
+- **Tema 2**: Resumen de otro tema. [Ver tweet](https://x.com/usuario/status/345678)
 
 Si hay pocos tweets o todos son sobre lo mismo, un solo párrafo con citas está bien.
 

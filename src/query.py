@@ -38,6 +38,7 @@ def call_claude(prompt: str, model: str = CLAUDE_MODEL, use_thinking: bool = Fal
     if use_thinking:
         kwargs["temperature"] = 1  # required for extended thinking
         kwargs["thinking"] = {"type": "enabled", "budget_tokens": 5000}
+        kwargs["max_tokens"] = 16000  # must be > budget_tokens
 
     response = client.messages.create(**kwargs)
 

@@ -1,0 +1,7 @@
+[server]
+# Allow access from other devices on the local network (mobile, tablet)
+address = "0.0.0.0"
+headless = true
+
+[browser]
+gatherUsageStats = false
