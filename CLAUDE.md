@@ -1,3 +1,48 @@
+# Filtro IA Redes Sociales — Agent Instructions
+
+## Project Overview
+
+AI filter layer for Twitter/X that replaces doom scrolling with curated summaries.
+The user asks "what did @user say today?" and gets a Claude-generated summary with clickable tweet links.
+
+### Architecture
+```
+Browser cookies → twikit (scraper) → Claude Sonnet API → Streamlit dashboard
+                                                      ↓
+                                                  SQLite (history)
+```
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `app.py` | Streamlit dashboard — main entry point (`streamlit run app.py`) |
+| `src/scraper.py` | Fetches tweets via twikit with cookie auth |
+| `src/query.py` | Claude API wrapper, chunking, summarization |
+| `src/storage.py` | SQLite persistence for summary history |
+| `src/config.py` | Loads .env settings |
+| `src/twikit_patch.py` | Monkey patch for twikit bug (March 2026, d60/twikit#408). MUST be imported BEFORE twikit. |
+| `export_cookies.py` | Converts Chrome Cookie-Editor export → twikit cookies.json |
+| `prompts/summarize` | Spanish prompt template with `{username}` and `{tweets}` placeholders |
+
+### Secrets (local only, never committed)
+- `.env` — ANTHROPIC_API_KEY, Twitter credentials, FAVORITE_USERS
+- `cookies.json` — twikit session cookies (expire every ~2 weeks, re-export with Cookie-Editor)
+
+### Known Gotchas
+1. **twikit login broken** — Cloudflare blocks it. Must use cookie auth (export_cookies.py).
+2. **twikit_patch.py** — Must be imported before any twikit import. Twitter changes JS bundles frequently; if scraping breaks, check d60/twikit issues for updated regex.
+3. **Windows UTF-8** — Use `python -X utf8` for scripts that print non-ASCII. Bash heredocs double-encode UTF-8 on Windows.
+4. **Mobile access** — Streamlit runs on 0.0.0.0:8501. User opened Windows Firewall port 8501 manually.
+
+### User Preferences
+- **Spanish** for all communication and UI
+- **No cloud deployments** — everything runs locally, no secrets in remote services
+- **No automatic API calls** — all Claude calls must be user-triggered (button click), never scheduled/cron
+- **Mobile-friendly** — avoid narrow multi-column layouts in Streamlit sidebar
+- **Cost-conscious** — Sonnet without thinking by default; thinking is opt-in
+
+---
+
 # Canvas Workflow — Agent Instructions
 
 ## CRITICAL RULE
