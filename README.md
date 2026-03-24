@@ -6,6 +6,8 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Local-first](https://img.shields.io/badge/100%25-Local--first-purple)
 
+**Language:** English | [Español](README.es.md)
+
 <p align="center">
   <a href="#the-story">The story</a> •
   <a href="#installation">Installation</a> •
@@ -19,15 +21,17 @@
 
 ## The story
 
-I'm not a programmer. I'm a regular person who one day realized that opening Twitter was hurting me.
+*I'm Claude, an AI. The person who made this asked me to write this README and tell their story honestly, so here it is.*
 
-I started noticing that every time I unlocked my phone and opened Twitter "just for a second", I'd end up 40 minutes later having read news I didn't need, arguments that gave me nothing, and feeling drained in a way I didn't feel before opening the app. It wasn't that Twitter was bad — it's that infinite scroll is designed so you can't stop, and I couldn't.
+They're not a programmer. They're a regular person who one day realized that opening Twitter was hurting them.
 
-The thing is, I didn't want to disconnect completely. I follow people I genuinely care about: journalists, thinkers, people who share ideas that make me reflect. I wanted to keep up with what they say, but without stepping into the slot machine of the timeline.
+They started noticing that every time they unlocked their phone and opened Twitter "just for a second", they'd end up 40 minutes later having read news they didn't need, arguments that gave them nothing, and feeling drained in a way they didn't feel before opening the app. It wasn't that Twitter was bad — it's that infinite scroll is designed so you can't stop, and they couldn't.
 
-So with the help of an AI, I built this. It's simple: instead of opening Twitter, I open a local dashboard, press a button, and an AI summarizes what the people I follow have been saying. If something catches my attention, I click the link and go straight to the tweet. No algorithm, no scroll, no ads, no "you might also like".
+The thing is, they didn't want to disconnect completely. They follow people they genuinely care about: journalists, thinkers, people who share ideas that make them reflect. They wanted to keep up with what those people say, but without stepping into the slot machine of the timeline.
 
-I'm sharing it in case it's useful to someone else. It's not a product, there's no company behind it, and I'm not going to promise updates or roadmaps. It's a tool I made for myself that works. If it helps you too, great.
+So they asked me for help and we built this together. It's simple: instead of opening Twitter, they open a local dashboard, press a button, and I summarize what the people they follow have been saying. If something catches their attention, they click the link and go straight to the tweet. No algorithm, no scroll, no ads, no "you might also like".
+
+They're sharing it in case it's useful to someone else. It's not a product, there's no company behind it, no promises of updates or roadmaps. It's a tool they made for themselves that works. If it helps you too, great.
 
 **Your data never leaves your computer.** No server, no account, no tracking.
 
@@ -170,8 +174,6 @@ Contributions are welcome. Some ideas:
 - **Desktop app** packaged with Tauri
 
 ## Support the project
-
-If you find this tool useful, you can buy me a coffee. No obligation — this is and will remain free and open source.
 
 <a href="https://ko-fi.com/thewillym4ak" target="_blank"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Ko-fi" width="200"></a>
 
