@@ -60,6 +60,7 @@ st.set_page_config(page_title="AI Filter - Twitter/X", page_icon="🧠", layout=
 st.markdown("""
 <style>
 @media (max-width: 768px) {
+    /* Bigger touch targets */
     .stButton > button {
         min-height: 48px;
         font-size: 1rem;
@@ -71,9 +72,39 @@ st.markdown("""
     .stSelectbox > div > div {
         min-height: 44px;
     }
+    /* Tighter padding for small screens */
     .block-container {
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        max-width: 100% !important;
+    }
+    /* Stack columns vertically on mobile */
+    [data-testid="stHorizontalBlock"] {
+        flex-direction: column;
+    }
+    [data-testid="stHorizontalBlock"] > div {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+    /* Prevent text overflow */
+    .stMarkdown, .stExpander {
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+    /* Larger expander touch area */
+    .streamlit-expanderHeader {
+        min-height: 48px;
+        font-size: 0.95rem;
+    }
+    /* Bigger checkbox touch target */
+    .stCheckbox label {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    /* Prevent horizontal scroll */
+    .main .block-container {
+        overflow-x: hidden;
     }
 }
 </style>
