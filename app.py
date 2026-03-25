@@ -27,14 +27,14 @@ def save_favorites(favorites: list[str]):
         json.dump(favorites, f, ensure_ascii=False, indent=2)
 
 
-def process_cookie_upload(uploaded_file) -> tuple[bool, str, int]:
-    """Convert uploaded Cookie-Editor JSON to twikit format.
+def process_cookie_text(raw_json: str) -> tuple[bool, str, int]:
+    """Convert pasted Cookie-Editor JSON to twikit format.
 
     Returns (success, message, cookie_count).
     """
     try:
-        browser_cookies = json.loads(uploaded_file.read().decode("utf-8"))
-    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        browser_cookies = json.loads(raw_json)
+    except json.JSONDecodeError as e:
         return False, str(e), 0
 
     twikit_cookies = {}
@@ -158,22 +158,30 @@ if st.sidebar.button(t["digest_button"], use_container_width=True, type="primary
     st.session_state["digest_hours_val"] = digest_hours
     st.rerun()
 
-# --- Sidebar: Cookie upload ---
+# --- Sidebar: Cookie paste ---
 st.sidebar.divider()
 with st.sidebar.expander(t["cookies_header"]):
     cookies_exist = os.path.isfile(COOKIES_PATH)
     status_text = t["cookies_ok"] if cookies_exist else t["cookies_not_found"]
     st.caption(t["cookies_status"].format(status=status_text))
     st.caption(t["cookies_info"])
-    uploaded = st.file_uploader(t["cookies_upload"], type=["json"], key="cookie_upload")
-    if uploaded is not None:
-        ok, msg, count = process_cookie_upload(uploaded)
-        if ok:
-            st.success(t["cookies_success"].format(count=count))
-        elif msg and "," in msg:
-            st.warning(t["cookies_missing"].format(missing=msg))
+    cookie_json = st.text_area(
+        t["cookies_paste"],
+        height=100,
+        placeholder=t["cookies_paste_placeholder"],
+        key="cookie_paste",
+    )
+    if st.button(t["cookies_save_button"], key="save_cookies", use_container_width=True):
+        if cookie_json.strip():
+            ok, msg, count = process_cookie_text(cookie_json)
+            if ok:
+                st.success(t["cookies_success"].format(count=count))
+            elif msg and "," in msg:
+                st.warning(t["cookies_missing"].format(missing=msg))
+            else:
+                st.error(t["cookies_error"].format(error=msg))
         else:
-            st.error(t["cookies_error"].format(error=msg))
+            st.warning(t["cookies_empty"])
 
 # --- Sidebar: Logout ---
 if APP_PASSWORD:
